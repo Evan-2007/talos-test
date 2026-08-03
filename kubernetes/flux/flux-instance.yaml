@@ -28,6 +28,6 @@ spec:
     # TODO: confirm this matches your actual remote before first bootstrap.
     # If the repo is private, also create the auth secret and set `secretRef`:
     #   flux create secret git flux-system --url=<url> --private-key-file=<key>
-    url: "https://github.com/Evan-2007/talos.git"
+    url: "https://github.com/Evan-2007/talos-test.git"
     ref: "refs/heads/main"
     path: "kubernetes/flux/cluster"
