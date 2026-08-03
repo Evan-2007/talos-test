@@ -1,0 +1,119 @@
+---
+version: '3'
+
+# Pinning these here means the "talos config file is empty" class of problem
+# can't recur — no reliance on ~/.talos/config or ~/.kube/config.
+env:
+  TALOSCONFIG: '{{.ROOT_DIR}}/clusterconfig/talosconfig'
+  KUBECONFIG: '{{.ROOT_DIR}}/kubeconfig'
+  SOPS_AGE_KEY_FILE: '{{.HOME}}/.config/sops/age/keys.txt'
+
+vars:
+  # Node that etcd is bootstrapped on and that kubeconfig is pulled from.
+  CONTROLLER: '192.168.10.107'
+
+tasks:
+  default:
+    silent: true
+    cmds:
+      - task --list
+
+  # ---------------------------------------------------------------- talos ---
+
+  config:
+    desc: Regenerate Talos machine configs from talconfig.yaml
+    dir: '{{.ROOT_DIR}}'
+    cmds:
+      - talhelper genconfig
+
+  apply:
+    desc: Apply machine configs to nodes in maintenance mode
+    dir: '{{.ROOT_DIR}}'
+    deps: [config]
+    cmds:
+      - talhelper gencommand apply --extra-flags=--insecure | bash -eu -o pipefail
+
+  bootstrap-etcd:
+    desc: Bootstrap etcd on the first control plane node
+    dir: '{{.ROOT_DIR}}'
+    cmds:
+      # Nodes install to disk and reboot after apply-config, so the first few
+      # attempts are expected to fail. Retry rather than guessing a sleep.
+      - |
+        for i in $(seq 1 60); do
+          if out=$(talhelper gencommand bootstrap | bash 2>&1); then
+            echo "etcd bootstrapped"; exit 0
+          fi
+          case "$out" in
+            *AlreadyExists*|*already*) echo "etcd already bootstrapped"; exit 0 ;;
+          esac
+          echo "[$i/60] waiting for {{.CONTROLLER}} to accept bootstrap..."
+          sleep 10
+        done
+        echo "timed out waiting for etcd bootstrap"; exit 1
+
+  kubeconfig:
+    desc: Fetch kubeconfig from the cluster
+    dir: '{{.ROOT_DIR}}'
+    cmds:
+      - talosctl kubeconfig --nodes {{.CONTROLLER}} --force '{{.ROOT_DIR}}/kubeconfig'
+
+  health:
+    desc: Talos-level cluster health check
+    dir: '{{.ROOT_DIR}}'
+    cmds:
+      - talosctl health --nodes {{.CONTROLLER}} --wait-timeout 10m
+
+  # ------------------------------------------------------------ bootstrap ---
+
+  bootstrap-apps:
+    desc: Install Cilium + flux-operator (the one imperative step)
+    dir: '{{.ROOT_DIR}}'
+    cmds:
+      - |
+        until kubectl get --raw /readyz >/dev/null 2>&1; do
+          echo "waiting for kube-apiserver..."; sleep 5
+        done
+      # Nodes stay NotReady until this completes — that is expected, not a failure.
+      - helmfile --file bootstrap/helmfile.yaml sync
+      - kubectl -n kube-system rollout status daemonset/cilium --timeout=10m
+
+  sops-secret:
+    desc: Push the age key into the cluster so Flux can decrypt
+    dir: '{{.ROOT_DIR}}'
+    cmds:
+      # Must exist before Flux reconciles anything encrypted, so it belongs to
+      # bootstrap rather than to Flux itself.
+      - kubectl create namespace flux-system --dry-run=client -o yaml | kubectl apply -f -
+      - |
+        kubectl -n flux-system create secret generic sops-age \
+          --from-file=age.agekey="$SOPS_AGE_KEY_FILE" \
+          --dry-run=client -o yaml | kubectl apply -f -
+
+  flux:
+    desc: Hand the cluster over to GitOps
+    dir: '{{.ROOT_DIR}}'
+    cmds:
+      - kubectl apply -f kubernetes/flux/flux-instance.yaml
+
+  # ---------------------------------------------------------------- whole ---
+
+  up:
+    desc: Full rebuild from nodes in maintenance mode
+    cmds:
+      - task: apply
+      - task: bootstrap-etcd
+      - task: kubeconfig
+      - task: bootstrap-apps
+      - task: sops-secret
+      - task: flux
+
+  down:
+    desc: DESTRUCTIVE — wipe all nodes back to maintenance mode
+    dir: '{{.ROOT_DIR}}'
+    prompt: This wipes STATE and EPHEMERAL on all three nodes. Continue?
+    cmds:
+      # talsecret.sops.yaml is deliberately untouched, so PKI stays stable
+      # across rebuilds and the existing talosconfig keeps working.
+      - talhelper gencommand reset --extra-flags="--graceful=false --reboot --system-labels-to-wipe STATE --system-labels-to-wipe EPHEMERAL" | bash -eu -o pipefail
+      - rm -f '{{.ROOT_DIR}}/kubeconfig'
