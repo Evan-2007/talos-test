@@ -6,6 +6,9 @@ metadata:
   namespace: flux-system
 spec:
   interval: 1h
+  # Retry quickly after transient failures instead of waiting a full hour —
+  # node reboots briefly break pod->ClusterIP traffic while Cilium reprograms.
+  retryInterval: 2m
   path: ./kubernetes/apps/infrastructure/cilium/app
   sourceRef:
     kind: GitRepository
