@@ -13,6 +13,17 @@ controlPlane:
         allowSchedulingOnControlPlanes: true
         proxy:
           disabled: true
+      machine:
+        kubelet:
+          extraMounts:
+          - destination: /etc/iscsi
+            type: bind
+            source: /etc/iscsi
+            options: [bind, rshared, rw]
+          - destination: /var/lib/iscsi
+            type: bind
+            source: /var/lib/iscsi
+            options: [bind, rshared, rw]
   talosImageURL: factory.talos.dev/metal-installer/e9c7ef96884d4fbc8c0a1304ccca4bb0287d766a8b4125997cb9dbe84262144e
 
 
