@@ -26,12 +26,20 @@ tasks:
     cmds:
       - talhelper genconfig
 
-  apply:
+  apply-insecure:
     desc: Apply machine configs to nodes in maintenance mode
     dir: '{{.ROOT_DIR}}'
     deps: [config]
     cmds:
       - talhelper gencommand apply --extra-flags=--insecure | bash -eu -o pipefail
+
+  apply:
+    desc: Apply machine configs to nodes in maintenance mode
+    dir: '{{.ROOT_DIR}}'
+    deps: [config]
+    cmds:
+      - talhelper gencommand apply | bash -eu -o pipefail
+
 
   bootstrap-etcd:
     desc: Bootstrap etcd on the first control plane node
@@ -101,7 +109,7 @@ tasks:
   up:
     desc: Full rebuild from nodes in maintenance mode
     cmds:
-      - task: apply
+      - task: apply-insecure
       - task: bootstrap-etcd
       - task: kubeconfig
       - task: bootstrap-apps
