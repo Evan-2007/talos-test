@@ -17,8 +17,8 @@ node:
         value: nsenter
       - name: ISCSIADM_HOST_PATH
         value: /usr/local/sbin/iscsiadm
-  iscsiDirHostPath: /var/iscsi
-  iscsiDirHostPathType: ""
+    iscsiDirHostPath: /var/iscsi
+    iscsiDirHostPathType: ""
 
 storageClasses:
   - name: truenas-iscsi
