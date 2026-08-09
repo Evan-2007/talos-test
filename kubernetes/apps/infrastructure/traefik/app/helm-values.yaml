@@ -17,3 +17,8 @@ providers:
 ingressRoute:
   dashboard:
     enabled: true
+  
+ports: 
+  traefik:
+    expose:
+      default: true
