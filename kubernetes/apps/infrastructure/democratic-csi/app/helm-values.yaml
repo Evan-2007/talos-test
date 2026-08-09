@@ -54,20 +54,20 @@ driver:
     instance_id:
     httpConnection:
       protocol: https
-      host: 192.168.10.12
+      host: ${TRUENAS_IP}
       port: 443
       allowInsecure: true
       apiVersion: 2
       # apiKey supplied by secret.sops.yaml
     zfs:
-      datasetParentName: hgst_14tb/k8s/iscsi/v
-      detachedSnapshotsDatasetParentName: hgst_14tb/k8s/iscsi/s
+      datasetParentName: ${ISCSI_DATASET}
+      detachedSnapshotsDatasetParentName: ${ISCSI_SNAPSHOT_DATASET}
       zvolCompression:
       zvolDedup:
       zvolEnableReservation: false
       zvolBlocksize:
     iscsi:
-      targetPortal: "192.168.10.12:3260"
+      targetPortal: "${TRUENAS_IP}:3260"
       targetPortals: []
       interface:
       namePrefix: csi-

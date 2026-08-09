@@ -17,6 +17,10 @@ spec:
   dependsOn:
     - name: cilium
   prune: true
+  postBuild:
+    substituteForm:
+      - kind: ConfigMap
+        name: cluster-settings
   wait: true
   timeout: 15m
   decryption:
