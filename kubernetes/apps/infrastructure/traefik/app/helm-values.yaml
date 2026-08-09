@@ -22,3 +22,8 @@ ports:
   traefik:
     expose:
       default: true
+
+tlsStore:
+  default:
+    defaultCertificate:
+      secretName: wildcard-lab-evanc-dev
