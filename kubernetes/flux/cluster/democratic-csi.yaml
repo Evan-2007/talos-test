@@ -18,7 +18,7 @@ spec:
     - name: cilium
   prune: true
   postBuild:
-    substituteForm:
+    substituteFrom:
       - kind: ConfigMap
         name: cluster-settings
   wait: true
