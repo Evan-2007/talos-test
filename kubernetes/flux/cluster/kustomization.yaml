@@ -6,3 +6,4 @@ resources:
   - infrastructure.yaml
   - democratic-csi.yaml
   - cilium-config.yaml
+  - traefik.yaml
