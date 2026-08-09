@@ -5,3 +5,4 @@ resources:
   - settings.yaml
   - infrastructure.yaml
   - democratic-csi.yaml
+  - cilium-config.yaml

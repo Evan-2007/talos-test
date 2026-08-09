@@ -4,6 +4,7 @@ kind: Kustomization
 namespace: kube-system
 resources:
   - helmrelease.yaml
+  
 
 # helm-values.yaml is the single source of truth: bootstrap/helmfile.yaml reads
 # it directly from disk, and Flux reads the same file via this ConfigMap.
