@@ -76,7 +76,7 @@ driver:
         #  cli -c "sharing iscsi portal query" or "sudo midclt call iscsi.portal.query | jq"
         #       cli -c "sharing iscsi initiator query" might not work  "sudo midclt call iscsi.initiator.query | jq" this works
         - targetGroupPortalGroup: 1
-          targetGroupInitiatorGroup: 1
+          targetGroupInitiatorGroup: 2
           targetGroupAuthType: None
           targetGroupAuthGroup:
       extentInsecureTpc: true
