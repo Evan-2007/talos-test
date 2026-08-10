@@ -8,3 +8,4 @@ resources:
   - cilium-config.yaml
   - traefik.yaml
   - beszel.yaml
+  - beszel-agent.yaml
