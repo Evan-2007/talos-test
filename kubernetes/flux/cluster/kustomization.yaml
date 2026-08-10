@@ -7,3 +7,4 @@ resources:
   - democratic-csi.yaml
   - cilium-config.yaml
   - traefik.yaml
+  - beszel.yaml

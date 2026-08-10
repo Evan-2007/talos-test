@@ -1,0 +1,15 @@
+---
+apiVersion: traefik.io/v1alpha1
+kind: IngressRoute
+metadata:
+  name: beszel-hub
+  namespace: beszel
+spec:
+  entryPoints: [websecure]
+  routes: 
+    - match: Host(`beszel.internal.lab.evanc.dev`)
+      kind: Rule
+      services:
+        - name: beszel-hub
+          port: 8090
+  tls: {}
