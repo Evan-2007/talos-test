@@ -32,6 +32,8 @@ spec:
           env:
             - name: HUB_URL
               value: "http://beszel-hub.beszel.svc.cluster.local:8090"
+            - name: KEY
+              value: "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIMbFPZK7328N+K42AumrbrAl/ZaI97s0Bem143Giuu2N"
             - name: TOKEN
               valueFrom:
                 secretKeyRef:
