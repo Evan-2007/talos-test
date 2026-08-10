@@ -23,7 +23,7 @@ spec:
             # Beszel uses this to build links and agent registration URLs,
             # so it must be the externally reachable address, not localhost.
             - name: APP_URL
-              value: "https://beszel.lab.evanc.dev"
+              value: "http://beszel.${DOMAIN_LOCAL}"
           ports:
             - name: http
               containerPort: 8090
