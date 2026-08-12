@@ -8,7 +8,6 @@ metadata:
     io.cilium/lb-ipam-ips: "${TECHNITIUM_LB_IP}"
 spec:
   type: LoadBalancer
-  externalTrafficPolicy: Local   
   selector:
     app: technitium
   ports:
