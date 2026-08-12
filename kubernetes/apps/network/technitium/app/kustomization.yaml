@@ -7,4 +7,4 @@ resources:
   - deployment.yaml
   - service.yaml
   - ingressroute.yaml
-  - secrets.sops.yaml
+  - secret.sops.yaml
