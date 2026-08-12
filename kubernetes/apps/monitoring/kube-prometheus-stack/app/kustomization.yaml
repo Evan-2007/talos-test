@@ -9,7 +9,7 @@ resources:
 
 configMapGenerator:
   - name: kps-helm-values
-    namespace: traefik
+    namespace: monitoring
     files:
       - values.yaml=helm-values.yaml
 
