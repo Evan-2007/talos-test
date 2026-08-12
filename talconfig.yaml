@@ -24,6 +24,17 @@ controlPlane:
             type: bind
             source: /var/lib/iscsi
             options: [bind, rshared, rw]
+    - |-
+      cluster:
+        controllerManager:
+          extraArgs:
+            bind-address: 0.0.0.0
+        scheduler:
+          extraArgs:
+            bind-address: 0.0.0.0
+        etcd:
+          extraArgs:
+            listen-metrics-urls: http://0.0.0.0:2381
   talosImageURL: factory.talos.dev/metal-installer/e9c7ef96884d4fbc8c0a1304ccca4bb0287d766a8b4125997cb9dbe84262144e
 
 
