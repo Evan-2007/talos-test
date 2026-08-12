@@ -10,3 +10,4 @@ resources:
   - beszel.yaml
   - beszel-agent.yaml
   - technitium.yaml
+  - kube-prometheus-stack.yaml
