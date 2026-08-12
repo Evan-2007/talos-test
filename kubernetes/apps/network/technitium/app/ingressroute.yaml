@@ -3,7 +3,7 @@ apiVersion: traefik.io/v1alpha1
 kind: IngressRoute
 metadata:
   name: technitium-local
-  namespace: beszel
+  namespace: technitium
 spec:
   entryPoints: [web]
   routes:
@@ -17,7 +17,7 @@ spec:
 # kind: IngressRoute
 # metadata:
 #   name: technitium-public
-#   namespace: beszel
+#   namespace: technitium
 # spec:
 #   entryPoints: [websecure]
 #   routes:
