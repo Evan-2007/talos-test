@@ -9,3 +9,4 @@ resources:
   - traefik.yaml
   - beszel.yaml
   - beszel-agent.yaml
+  - technitium.yaml

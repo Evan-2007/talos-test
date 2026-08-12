@@ -13,3 +13,4 @@ data:
   TRAEFIK_LB_IP: "192.168.10.200"
   DOMAIN_LOCAL: "k8s.lan"
   DOMAIN_PUBLIC: "lab.evanc.dev"
+  TECHNITIUM_LB_IP: "192.168.10.201"
